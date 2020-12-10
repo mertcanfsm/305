@@ -1,4 +1,4 @@
-class Triangle_Yaris extends Animator  {
+class halilyaris extends Animator  {
     constructor() {
         super();
         this.author = 'Halil Ibrahim YARIS'
