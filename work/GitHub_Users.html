@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width">
-  <link rel="icon" href="../images/icon192.png">
-  <title>GitHub Users</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" sizes="192x192" href="/JS/images/JS.png">
+    <title>GitHub Users</title>
+
   <style>
     body {
         max-width: 440px;
@@ -19,7 +20,7 @@
 <body>
 
 <h2 id=title></h2>
-<input type=text id=usr value=blm-fsmvu onChange="readUser()">
+<input type=text id=usr value=hakandilek onChange="readUser()">
 <p id=out></p>
 <hr />
 <b>Sample code</b>
@@ -31,21 +32,22 @@
 
 <script>
 "use strict";
+const NL = "\n", BR = "<BR>", 
+    URL = "https://api.github.com/users/"
 function error(t) {
     out.style.color = 'red'
-    out.innerText = t; throw t
+    out.innerText = t; console.log(t)
 }
-async function toJSON(url) {
-    let r = await fetch(url)
-    if (!r.ok) error(r.statusText)
-    return r.json()
+function listRepos(b) {
+    if (b.length) 
+      out.innerHTML += 
+        b.map(x => x.name).join(", ")
 }
-async function readUser() {
-    const BR = "<BR>", 
-      URL = "https://api.github.com/users/"
-    let u = await toJSON(URL+usr.value)
-    if (!u || !u.login) 
+function userData(u) {
+    if (!u || !u.login) {
       error(usr.value+' not found')
+      return
+    } 
     //u.login is the same as usr.value
     out.style.color = ''
     out.innerHTML = ''
@@ -68,13 +70,19 @@ async function readUser() {
     //add repo count
     let p = u.public_repos+" repos"
     out.innerHTML += BR+p+BR+BR
-    let b = await toJSON(URL+u.login+"/repos")
-    if (!b.length) error('no data') 
-    out.innerHTML += 
-        b.map(x => x.name).join(", ")
+    fetch(URL+u.login+"/repos")
+      .then(r => r.json()) 
+      .then(listRepos).catch(error)
 }
+function readUser() {
+    fetch(URL+usr.value)
+      .then(r => r.ok? r.json() : null) 
+      .then(userData).catch(error)
+}
+
     title.innerText = document.title
-    sample.innerText = toJSON +'\n'+ readUser
+    sample.innerText =  
+       listRepos +NL+ userData +NL+ readUser
     out.innerText = "Reading data"
     readUser()
 </script>
