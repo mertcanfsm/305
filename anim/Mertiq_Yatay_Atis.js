@@ -1,4 +1,4 @@
-class Yatay_Atis_Mertiq extends Animator  {
+class Mertiq_Yatay_Atis extends Animator  {
     constructor() {
         super();
         this.author = 'Mertiq'
